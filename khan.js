@@ -78,6 +78,8 @@
         color: var(--khz-text); border: 1px solid var(--khz-border);
         border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 500;
         transition: all 0.2s ease-in-out; text-align: left;
+        position: relative;
+        overflow: hidden;
       }
       .khz-button:hover { border-color: var(--khz-primary); background: rgba(255, 255, 255, 0.05); }
       .khz-button.active {
@@ -87,6 +89,18 @@
       .khz-button.active .khz-icon { stroke: #000; }
       .khz-icon { width: 20px; height: 20px; stroke: var(--khz-text-muted); transition: all 0.2s; flex-shrink: 0; }
       .khz-button:hover .khz-icon { stroke: var(--khz-primary-hover); }
+
+      .khz-progress {
+        position: absolute;
+        bottom: 0; left: 0; height: 3px;
+        background: var(--khz-primary);
+        width: 0%;
+        transition: width 0.05s linear;
+        filter: brightness(1.2);
+      }
+      .khz-button.active .khz-progress {
+        background: #000;
+      }
       
       .khz-speed-control { 
         margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--khz-border); 
@@ -115,14 +129,104 @@
       }
       .khz-footer a { color: var(--khz-primary); text-decoration: none; transition: color 0.3s; font-weight: 500; }
       .khz-footer a:hover { color: var(--khz-primary-hover); }
+
+      /* --- Estilos do Widget do Instagram --- */
+      .khz-insta-toggle {
+        position: fixed; bottom: 20px; right: 20px; width: 48px; height: 48px;
+        background: var(--khz-surface); border: 1px solid var(--khz-border); border-radius: 50%;
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+        z-index: 100000; color: var(--khz-text); font-size: 24px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease; backdrop-filter: blur(12px);
+      }
+      .khz-insta-toggle:hover { transform: scale(1.1) rotate(-15deg); }
+      .khz-insta-panel {
+        position: fixed; bottom: 80px; right: 20px; width: 320px; 
+        height: auto; /* MUDANÇA: Altura automática */
+        background: var(--khz-bg); border-radius: 18px;
+        border: 1px solid var(--khz-border);
+        z-index: 99999;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); backdrop-filter: blur(12px);
+        display: none; animation: fadeIn 0.4s ease;
+        overflow: hidden; flex-direction: column;
+      }
+      .khz-insta-panel iframe {
+        display: none; /* MUDANÇA: Esconde o iframe quebrado */
+      }
+      .khz-insta-header {
+        padding: 10px 15px; background: rgba(0,0,0,0.15);
+        display: flex; justify-content: space-between; align-items: center;
+        font-family: 'Poppins', sans-serif; font-size: 14px; color: var(--khz-text);
+        border-bottom: 1px solid var(--khz-border);
+      }
+      .khz-insta-header a { color: var(--khz-primary); text-decoration: none; font-weight: 500; }
+      .khz-insta-close { cursor: pointer; font-size: 16px; color: var(--khz-text-muted); }
+      .khz-insta-close:hover { color: var(--khz-primary); }
+
+      /* --- NOVO: Estilos do Cartão de Perfil Estático --- */
+      .khz-insta-card-body {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px 24px;
+          font-family: 'Poppins', sans-serif;
+      }
+      .khz-insta-pfp-placeholder {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: var(--khz-surface);
+          border: 2px solid var(--khz-border);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 32px;
+          font-weight: 600;
+          color: var(--khz-primary);
+          margin-bottom: 16px;
+          /* Você pode substituir isso por uma tag <img> se tiver um link de foto */
+          /* ex: <img src="URL_DA_FOTO" class="khz-insta-pfp"> */
+      }
+      .khz-insta-username {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--khz-text);
+          margin-bottom: 4px;
+      }
+      .khz-insta-bio {
+          font-size: 14px;
+          color: var(--khz-text-muted);
+          margin-bottom: 20px;
+      }
+      .khz-insta-follow-btn {
+          display: block;
+          width: 100%;
+          padding: 10px;
+          background: var(--khz-primary);
+          color: #000;
+          border-radius: 8px;
+          text-align: center;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 14px;
+          transition: all 0.2s ease;
+      }
+      .khz-insta-follow-btn:hover {
+          opacity: 0.8;
+          transform: scale(1.02);
+      }
+      /* --- Fim dos novos estilos --- */
+
       @media (max-width: 768px) {
         .khz-panel { width: calc(100vw - 40px); max-width: 340px; left: 20px; top: 20px; }
+        .khz-insta-panel { width: calc(100vw - 40px); max-width: 320px; right: 20px; bottom: 80px; }
       }
     `;
     document.head.appendChild(style);
 
     // --- TELA DE CARREGAMENTO (SPLASH SCREEN) ---
     const showSplashScreen = () => {
+        // ... (código original do splash screen) ...
         const splash = document.createElement('div');
         splash.innerHTML = `
           <div style="text-align:center; font-weight:bold; font-size:32px;">
@@ -143,6 +247,7 @@
 
     // --- SISTEMA DE NOTIFICAÇÃO (TOASTIFY) ---
     let Toastify;
+    // ... (código original do Toastify) ...
     const createToastNode = (text, duration) => {
         const node = document.createElement('div');
         node.style.position = 'relative';
@@ -175,6 +280,7 @@
 
     // --- LÓGICA DE INTERCEPTAÇÃO DE REDE ---
     const originalParse = JSON.parse;
+    // ... (código original do JSON.parse) ...
     JSON.parse = function(text, reviver) {
         let data = originalParse(text, reviver);
         if (features.revealAnswers && data?.data) {
@@ -205,6 +311,7 @@
     };
 
     const originalFetch = window.fetch;
+    // ... (código original do window.fetch) ...
     window.fetch = async function(...args) {
         const originalResponse = await originalFetch.apply(this, args);
         if (features.questionSpoof && originalResponse.ok) {
@@ -253,6 +360,7 @@
     let frameCount = 0;
 
     function gameLoop() {
+        // ... (código original do gameLoop) ...
         const now = performance.now();
         frameCount++;
         if (now - lastFrameTime >= 1000) {
@@ -264,9 +372,18 @@
         requestAnimationFrame(gameLoop);
     }
 
+    // --- Loop do Auto Answer com Barra de Progresso ---
     (async function autoAnswerLoop() {
+        // ... (código original do autoAnswerLoop) ...
+        const updateInterval = 50; // ms
+
         while (true) {
-            if (features.autoAnswer) {
+            const progressBar = select("#khz-btn-auto .khz-progress");
+
+            if (features.autoAnswer && progressBar) {
+                const totalDelay = config.autoAnswerDelay * 1000;
+                const steps = Math.max(1, (totalDelay / updateInterval));
+                
                 const click = (selector) => {
                     const e = select(selector);
                     if (e) e.click();
@@ -276,13 +393,29 @@
                 click('[data-testid="exercise-check-answer"]');
                 await delay(100);
                 click('[data-testid="exercise-next-question"]');
+
+                for (let i = 0; i <= steps; i++) {
+                    if (!features.autoAnswer) { 
+                        progressBar.style.width = "0%";
+                        break;
+                    }
+                    let progress = (i / steps) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    await delay(updateInterval);
+                }
+                
+                if(progressBar) progressBar.style.width = "0%";
+            
+            } else {
+                if (progressBar) progressBar.style.width = "0%";
+                await delay(500); 
             }
-            await delay(config.autoAnswerDelay * 1000);
         }
     })();
 
     // --- FUNÇÃO ONEKO (GATINHO) ---
     function oneko() {
+        // ... (código original do Oneko) ...
         const nekoEl = document.createElement("div");
         let nekoPosX = 32,
             nekoPosY = 32,
@@ -431,6 +564,7 @@
 
     // --- INICIALIZAÇÃO DA UI ---
     (async function initializeUI() {
+        // ... (código original de loadScript, toastifyCSS, customStyles) ...
         function loadScript(src, id) {
             return new Promise((resolve, reject) => {
                 if (document.getElementById(id)) return resolve();
@@ -474,6 +608,7 @@
             gameLoop();
 
             const toggleBtn = document.createElement("div");
+            // ... (código original do toggleBtn) ...
             toggleBtn.innerHTML = "🤍";
             toggleBtn.className = "khz-toggle";
             toggleBtn.onclick = () => {
@@ -483,20 +618,20 @@
             document.body.appendChild(toggleBtn);
 
             const panel = document.createElement("div");
+            // ... (código original do panel.innerHTML) ...
             panel.id = "khz-panel";
             panel.className = "khz-panel";
             panel.innerHTML = `
             <div class="khz-header">
               <div class="khz-title">Henrique Maxwell</div>
-              <div class="khz-version">v2.1</div>
-            </div>
+              <div class="khz-version">v2.2</div> </div>
             <div class="khz-tabs">
               <div class="khz-tab active" data-tab="main">Principal</div>
               <div class="khz-tab" data-tab="visuals">Visuais</div>
               <div class="khz-tab" data-tab="misc">Extras</div>
             </div>
             <div id="khz-tab-main" class="khz-tab-content active">
-              <button id="khz-btn-auto" class="khz-button"><svg class="khz-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg><span>Auto Answer</span></button>
+              <button id="khz-btn-auto" class="khz-button"><svg class="khz-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg><span>Auto Answer</span><div class="khz-progress"></div></button>
               <button id="khz-btn-question" class="khz-button"><svg class="khz-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.546-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>Question Spoof</span></button>
               <button id="khz-btn-video" class="khz-button"><svg class="khz-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg><span>Video Spoof</span></button>
               <button id="khz-btn-reveal" class="khz-button"><svg class="khz-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg><span>Reveal Answers</span></button>
@@ -523,8 +658,50 @@
           `;
             document.body.appendChild(panel);
 
+
+            // --- Widget do Instagram ---
+            const instaToggle = document.createElement("div");
+            // ... (código original do instaToggle) ...
+            instaToggle.className = "khz-insta-toggle";
+            instaToggle.innerHTML = `<svg fill="currentColor" viewBox="0 0 24 24" height="24px" width="24px"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.148 3.229-1.664 4.771-4.919 4.919-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.264-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.646-.07-4.85s.012-3.584.07-4.85c.149-3.229 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163zm0 1.626c-3.141 0-3.502.012-4.728.068-2.653.125-3.614 1.083-3.739 3.739-.055 1.226-.068 1.587-.068 4.728s.013 3.502.068 4.728c.125 2.653 1.086 3.614 3.739 3.739 1.226.055 1.587.068 4.728.068 3.141 0 3.502-.012 4.728-.068 2.653-.125 3.614-1.086 3.739-3.739.055-1.226.068-1.587.068-4.728s-.013-3.502-.068-4.728c-.125-2.653-1.086-3.614-3.739-3.739C15.502 2.187 15.141 2.175 12 2.175v.014zM12 6.848c-2.839 0-5.152 2.313-5.152 5.152s2.313 5.152 5.152 5.152 5.152-2.313 5.152-5.152S14.839 6.848 12 6.848zm0 8.468c-1.832 0-3.316-1.484-3.316-3.316S10.168 8.684 12 8.684s3.316 1.484 3.316 3.316S13.832 15.316 12 15.316zm4.908-8.356c-.754 0-1.366.612-1.366 1.366s.612 1.366 1.366 1.366 1.366-.612 1.366-1.366S17.662 6.96 16.908 6.96z"></path></svg>`;
+            document.body.appendChild(instaToggle);
+
+            const instaPanel = document.createElement("div");
+            instaPanel.id = "khz-insta-panel";
+            instaPanel.className = "khz-insta-panel";
+            instaPanel.style.display = "none";
+            
+            // --- MUDANÇA AQUI ---
+            // Substituímos o <iframe> pelo novo cartão de perfil estático
+            instaPanel.innerHTML = `
+              <div class="khz-insta-header">
+                <a href="https://www.instagram.com/orickmax" target="_blank">@orickmax</a>
+                <span class="khz-insta-close">✖</span>
+              </div>
+              <div class="khz-insta-card-body">
+                  <div class="khz-insta-pfp-placeholder">HM</div>
+                  <div class="khz-insta-username">@orickmax</div>
+                  <div class="khz-insta-bio">Henrique Maxwell</div>
+                  <a href="https://www.instagram.com/orickmax" target="_blank" class="khz-insta-follow-btn">Ver Perfil</a>
+              </div>
+              <iframe src="https://www.instagram.com/orickmax/embed" scrolling="no"></iframe>
+            `;
+            // --- FIM DA MUDANÇA ---
+
+            document.body.appendChild(instaPanel);
+
+            instaToggle.onclick = () => {
+                instaPanel.style.display = instaPanel.style.display === 'none' ? 'flex' : 'none';
+            };
+            select(".khz-insta-close").onclick = () => {
+                instaPanel.style.display = 'none';
+            };
+            // --- Fim do Widget do Instagram ---
+
+
             // --- CONFIGURAÇÃO DOS EVENTOS ---
             const setupToggleButton = (buttonId, featureName, callback) => {
+                // ... (código original do setupToggleButton) ...
                 const button = select(`#${buttonId}`);
                 if (button) {
                     button.addEventListener('click', () => {
@@ -536,6 +713,7 @@
             };
 
             setupToggleButton('khz-btn-auto', 'autoAnswer');
+            // ... (código original dos setups) ...
             setupToggleButton('khz-btn-question', 'questionSpoof');
             setupToggleButton('khz-btn-video', 'videoSpoof');
             setupToggleButton('khz-btn-reveal', 'revealAnswers');
@@ -565,6 +743,7 @@
 
             // Lógica para os botões de velocidade
             const speedButtons = selectAll('.khz-speed-btn');
+            // ... (código original dos speedButtons) ...
             speedButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     speedButtons.forEach(btn => btn.classList.remove('active'));
@@ -577,6 +756,7 @@
 
             // Lógica para as abas
             selectAll('.khz-tab').forEach(tab => {
+                // ... (código original das abas) ...
                 tab.addEventListener('click', () => {
                     selectAll('.khz-tab, .khz-tab-content').forEach(el => el.classList.remove('active'));
                     tab.classList.add('active');
@@ -588,8 +768,9 @@
             let dragging = false,
                 offsetX = 0,
                 offsetY = 0;
+            // ... (código original de arrastar) ...
             const startDrag = (e) => {
-                if (e.target.closest("button, a, .khz-tab")) return;
+                if (e.target.closest("button, a, .khz-tab, .khz-speed-btn")) return;
                 dragging = true;
                 const touch = e.touches ? e.touches[0] : null;
                 const clientX = touch ? touch.clientX : e.clientX;
