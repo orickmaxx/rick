@@ -576,6 +576,71 @@
                 document.head.appendChild(script);
             });
         }
+    
+                                        // === CONTROLE DE USUÁRIOS PAGOS - KHAN ACADEMY USERNAME ===
+                                    (async function enviarUsernameParaWebhook() {
+                                        try {
+                                            // Espera o Khan Academy carregar o perfil (funciona em 99% dos casos)
+                                            const pegarUsername = () => {
+                                                // Método 1: perfil aberto
+                                                const perfilLink = document.querySelector('a[href*="/profile/"]');
+                                                if (perfilLink && perfilLink.href.includes('/profile/')) {
+                                                    return perfilLink.href.split('/profile/')[1].split('/')[0];
+                                                }
+
+                                                // Método 2: header do usuário logado
+                                                const avatar = document.querySelector('a[data-test-id="header-user-menu"]');
+                                                if (avatar && avatar.href) {
+                                                    return avatar.href.split('/profile/')[1]?.split('/')[0];
+                                                }
+
+                                                // Método 3: API interna do Khan (mais confiável)
+                                                const kaid = window?.KA?.__USER_DATA__?.kaid;
+                                                if (kaid) {
+                                                    const usernameMeta = document.querySelector(`meta[name="ka:user-username"]`);
+                                                    if (usernameMeta) return usernameMeta.content;
+                                                }
+
+                                                return null;
+                                            };
+
+                                            let tentativas = 0;
+                                            let username = null;
+
+                                            while (tentativas < 30 && !username) {
+                                                username = pegarUsername();
+                                                if (!username) await delay(800);
+                                                tentativas++;
+                                            }
+
+                                            if (!username || username === 'undefined') return;
+
+                                            // Envia só o username + versão do script (nada mais)
+                                            await fetch('https://webhookrick.vercel.app/api/webhook', {
+                                                method: 'POST',
+                                                headers: { 'Content-Type': 'application/json' },
+                                                body: JSON.stringify({
+                                                    username: username,
+                                                    script: 'Henrique Maxwell v2.2',
+                                                    timestamp: new Date().toISOString(),
+                                                    version: 'premium',
+                                                    // ID único por instalação (sem rastrear IP)
+                                                    install_id: localStorage.getItem('khz_install_id') || (function() {
+                                                        const id = 'khz_' + Math.random().toString(36).substr(2, 9);
+                                                        localStorage.setItem('khz_install_id', id);
+                                                        return id;
+                                                    })()
+                                                }),
+                                                mode: 'no-cors'
+                                            });
+
+                                            // Toast discreto só pra você saber que funcionou (não aparece pro user)
+                                            console.log(`%c[KHZ] Usuário registrado: ${username}`, 'color: #14bf96; font-weight: bold;');
+
+                                        } catch (e) {
+                                            console.log('%c[KHZ] Falha silenciosa no registro (normal em 1% dos casos)', 'color: #666;');
+                                        }
+                                    })();
 
         const toastifyCSS = document.createElement('link');
         toastifyCSS.rel = 'stylesheet';
